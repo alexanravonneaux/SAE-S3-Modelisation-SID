@@ -1,0 +1,20 @@
+SELECT title
+FROM Movie
+WHERE mID NOT IN (SELECT mID FROM Rating);
+
+SELECT m.title
+FROM Movie m
+LEFT JOIN Rating r ON m.mID = r.mID
+WHERE r.rID IS NULL;
+
+SELECT re.name, m.title, ra.stars
+FROM Rating ra
+JOIN Movie m ON ra.mID = m.mID
+JOIN Reviewer re ON ra.rID = re.rID
+WHERE ra.stars = (SELECT MIN(stars) FROM Rating);
+
+SELECT m.title, MAX(ra.stars) as max_stars
+FROM Movie m
+JOIN Rating ra ON m.mID = ra.mID
+GROUP BY m.mID, m.title
+ORDER BY m.title;

@@ -1,0 +1,37 @@
+SELECT m.title, AVG(ra.stars) as avg_rating
+FROM Movie m
+JOIN Rating ra ON m.mID = ra.mID
+GROUP BY m.mID, m.title;
+
+SELECT re.name
+FROM Reviewer re
+JOIN Rating ra ON re.rID = ra.rID
+GROUP BY re.rID, re.name
+HAVING COUNT(ra.mID) >= 3;
+
+SELECT m.title, AVG(ra.stars) as avg_rating
+FROM Movie m
+JOIN Rating ra ON m.mID = ra.mID
+GROUP BY m.mID, m.title
+HAVING AVG(ra.stars) >= ALL (
+    SELECT AVG(stars)
+    FROM Rating
+    GROUP BY mID
+);
+
+SELECT
+(
+    SELECT AVG(avg_stars)
+    FROM (SELECT mID, AVG(stars) as avg_stars FROM Rating GROUP BY mID) as T1
+    JOIN Movie m ON T1.mID = m.mID WHERE m.year < 1980
+) - (
+    SELECT AVG(avg_stars)
+    FROM (SELECT mID, AVG(stars) as avg_stars FROM Rating GROUP BY mID) as T2
+    JOIN Movie m ON T2.mID = m.mID WHERE m.year >= 1980
+) as difference;
+
+SELECT m.title, (MAX(ra.stars) - MIN(ra.stars)) as amplitude
+FROM Movie m
+JOIN Rating ra ON m.mID = ra.mID
+GROUP BY m.mID, m.title
+ORDER BY amplitude DESC, m.title;

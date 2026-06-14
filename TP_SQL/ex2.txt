@@ -1,0 +1,50 @@
+SELECT title
+FROM Movie
+WHERE director = 'Steven Spielberg';
+
+SELECT DISTINCT m.year
+FROM Movie m
+JOIN Rating r ON m.mID = r.mID
+WHERE r.stars IN (4, 5)
+ORDER BY m.year ASC;
+
+SELECT DISTINCT re.name
+FROM Reviewer re
+JOIN Rating ra ON re.rID = ra.rID
+JOIN Movie m ON ra.mID = m.mID
+WHERE m.title = 'Gone with the Wind';
+
+SELECT re.name, m.title, ra.stars
+FROM Reviewer re
+JOIN Rating ra ON re.rID = ra.rID
+JOIN Movie m ON ra.mID = m.mID
+WHERE re.name = m.director;
+
+SELECT re.name, m.title, ra.stars, ra.ratingDate
+FROM Rating ra
+JOIN Reviewer re ON ra.rID = re.rID
+JOIN Movie m ON ra.mID = m.mID
+ORDER BY re.name, m.title, ra.stars;
+
+SELECT title
+FROM Movie
+WHERE mID NOT IN (
+    SELECT ra.mID
+    FROM Rating ra
+    JOIN Reviewer re ON ra.rID = re.rID
+    WHERE re.name = 'Chris Jackson'
+);
+
+SELECT DISTINCT re.name, m.title
+FROM Rating r1
+JOIN Rating r2 ON r1.rID = r2.rID AND r1.mID = r2.mID
+JOIN Reviewer re ON r1.rID = re.rID
+JOIN Movie m ON r1.mID = m.mID
+WHERE r2.ratingDate > r1.ratingDate AND r2.stars > r1.stars;
+
+SELECT DISTINCT re1.name, re2.name
+FROM Rating ra1
+JOIN Rating ra2 ON ra1.mID = ra2.mID AND ra1.rID < ra2.rID
+JOIN Reviewer re1 ON ra1.rID = re1.rID
+JOIN Reviewer re2 ON ra2.rID = re2.rID
+ORDER BY re1.name, re2.name;
